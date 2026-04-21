@@ -296,7 +296,7 @@ const copy = {
   },
   ar: {
     locale: 'ar-IQ-u-nu-arab',
-    operationTag: 'مشروع القوى العاملة',
+    operationTag: 'Workforce Project',
     title: 'العمال والمستندات',
     switchLanguage: 'English',
     switchTheme: 'تبديل المظهر',
@@ -387,7 +387,7 @@ const copy = {
       submit: 'تسجيل الدخول',
       invalid: 'اسم المستخدم أو كلمة المرور غير صحيحة.',
       helper: 'This system is only allowed for the system manager.',
-      logoAlt: 'أيقونة تطبيق مشروع القوى العاملة',
+      logoAlt: 'Workforce Project app icon',
     },
   },
 }
@@ -981,7 +981,7 @@ function App() {
 
         <footer className="mt-8 pb-3 text-center">
           <p className={`text-sm font-medium ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-            Workforce Project
+            Designed by Vandecipher
           </p>
         </footer>
       </div>
