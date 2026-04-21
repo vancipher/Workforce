@@ -17,6 +17,12 @@ const adaptiveCompressionProfiles = [
   { maxWidthOrHeight: 1800, maxSizeMB: 0.38, initialQuality: 0.84 },
 ]
 
+const emergencyCompressionProfiles = [
+  { maxWidthOrHeight: 1600, maxSizeMB: 0.3, initialQuality: 0.8 },
+  { maxWidthOrHeight: 1400, maxSizeMB: 0.22, initialQuality: 0.74 },
+  { maxWidthOrHeight: 1200, maxSizeMB: 0.16, initialQuality: 0.68 },
+]
+
 function sanitizeBaseName(fileName) {
   const noExtension = fileName.replace(/\.[^.]+$/, '') || 'document'
   return noExtension
@@ -96,6 +102,29 @@ async function compressAdaptive(sourceFile) {
   return bestCandidate
 }
 
+async function compressEmergency(sourceFile) {
+  let bestCandidate = sourceFile
+
+  for (const profile of emergencyCompressionProfiles) {
+    const candidate = await imageCompression(sourceFile, {
+      ...profile,
+      useWebWorker: true,
+      preserveExif: true,
+      fileType: 'image/webp',
+    })
+
+    if (candidate.size < bestCandidate.size) {
+      bestCandidate = candidate
+    }
+
+    if (bytesToKb(candidate.size) <= MAX_FINAL_IMAGE_SIZE_KB) {
+      return candidate
+    }
+  }
+
+  return bestCandidate
+}
+
 export async function compressImage(file) {
   if (!(file instanceof File)) {
     throw new Error('Invalid file payload.')
@@ -113,15 +142,23 @@ export async function compressImage(file) {
     throw new Error(`File is too large. Maximum allowed size is ${MAX_INPUT_FILE_SIZE_MB}MB.`)
   }
 
-  const sourceFile = looksLikeHeic(file) ? await convertHeicToJpeg(file) : file
+  let sourceFile = file
+  if (looksLikeHeic(file)) {
+    try {
+      sourceFile = await convertHeicToJpeg(file)
+    } catch {
+      throw new Error('Could not convert HEIC image. Please convert it to JPG/PNG and try again.')
+    }
+  }
 
   try {
-    const compressed = await compressAdaptive(sourceFile)
+    const firstPass = await compressAdaptive(sourceFile)
+    const compressed = bytesToKb(firstPass.size) > MAX_FINAL_IMAGE_SIZE_KB
+      ? await compressEmergency(firstPass)
+      : firstPass
 
     if (bytesToKb(compressed.size) > MAX_FINAL_IMAGE_SIZE_KB) {
-      throw new Error(
-        `Image is still too large after optimization. Keep it below ${MAX_FINAL_IMAGE_SIZE_KB}KB.`,
-      )
+      throw new Error(`Image is still too large after optimization.`)
     }
 
     const extension = compressed.type.includes('png')
@@ -137,7 +174,9 @@ export async function compressImage(file) {
     })
   } catch (error) {
     if (error instanceof Error && /too large/i.test(error.message)) {
-      throw error
+      throw new Error(
+        `Image is too large after compression. Use a lower-resolution image or increase VITE_IMAGE_MAX_SIZE_KB (current ${MAX_FINAL_IMAGE_SIZE_KB}KB).`,
+      )
     }
 
     const extension = extensionFromFileName(sourceFile.name, 'jpg')

@@ -200,8 +200,8 @@ function LoginPanel({
 const copy = {
   en: {
     locale: 'en-US',
-    operationTag: 'Employee Operations',
-    title: 'Workforce Manager',
+    operationTag: 'Workforce Project',
+    title: 'Workers & documents',
     switchLanguage: 'العربية',
     switchTheme: 'Theme',
     themeDark: 'Dark',
@@ -291,13 +291,13 @@ const copy = {
       submit: 'Secure Sign In',
       invalid: 'Incorrect username or password.',
       helper: 'This system is only allowed for the system manager.',
-      logoAlt: 'Employee documents app logo',
+      logoAlt: 'Workforce Project app icon',
     },
   },
   ar: {
     locale: 'ar-IQ-u-nu-arab',
-    operationTag: 'إدارة الموظفين',
-    title: 'قاعدة بيانات الموظفين والمستندات',
+    operationTag: 'مشروع القوى العاملة',
+    title: 'العمال والمستندات',
     switchLanguage: 'English',
     switchTheme: 'تبديل المظهر',
     themeDark: 'داكن',
@@ -387,7 +387,7 @@ const copy = {
       submit: 'تسجيل الدخول',
       invalid: 'اسم المستخدم أو كلمة المرور غير صحيحة.',
       helper: 'This system is only allowed for the system manager.',
-      logoAlt: 'شعار نظام مستندات الموظفين',
+      logoAlt: 'أيقونة تطبيق مشروع القوى العاملة',
     },
   },
 }
@@ -981,7 +981,7 @@ function App() {
 
         <footer className="mt-8 pb-3 text-center">
           <p className={`text-sm font-medium ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
-            Designed by Vandecipher
+            Workforce Project
           </p>
         </footer>
       </div>

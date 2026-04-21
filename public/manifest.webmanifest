@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Workers Data Manager",
-  "short_name": "Workers Data",
-  "description": "Manage worker records and documents in an installable app.",
+  "name": "Workforce Project",
+  "short_name": "Workforce",
+  "description": "Workforce Project — worker directory, profiles, and document archive. Install to your home screen for quick access.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -27,9 +27,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Open Worker Directory",
+      "name": "Open directory",
       "short_name": "Directory",
-      "description": "Open the workers directory view",
+      "description": "Open the workforce directory",
       "url": "/"
     }
   ]

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workers-data-manager-v2'
+const CACHE_NAME = 'workforce-project-v3'
 const OFFLINE_URL = '/offline.html'
 const SHELL_ASSETS = [
   '/',
