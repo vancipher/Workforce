@@ -1,19 +1,36 @@
 {
-  "name": "Vandecipher Employee DB",
-  "short_name": "Employee DB",
-  "description": "Secure employee profiles and document archives.",
+  "id": "/",
+  "name": "Workers Data Manager",
+  "short_name": "Workers Data",
+  "description": "Manage worker records and documents in an installable app.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait-primary",
-  "background_color": "#f4efe4",
+  "background_color": "#0b1220",
   "theme_color": "#0f3f33",
+  "lang": "en",
   "icons": [
     {
-      "src": "/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Worker Directory",
+      "short_name": "Directory",
+      "description": "Open the workers directory view",
+      "url": "/"
     }
   ]
 }

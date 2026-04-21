@@ -1,5 +1,16 @@
-const CACHE_NAME = 'vandecipher-employee-db-v1'
-const SHELL_ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/logo.svg', '/favicon.svg']
+const CACHE_NAME = 'workers-data-manager-v2'
+const OFFLINE_URL = '/offline.html'
+const SHELL_ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.webmanifest',
+  '/logo.svg',
+  '/favicon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  OFFLINE_URL,
+]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -30,7 +41,10 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match('/index.html')),
+      fetch(request).catch(async () => {
+        const cache = await caches.open(CACHE_NAME)
+        return cache.match('/index.html') || cache.match(OFFLINE_URL)
+      }),
     )
     return
   }
