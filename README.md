@@ -27,6 +27,11 @@ Create a `.env` file (see `.env.example`):
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_SUPABASE_BUCKET=employee-documents
+VITE_SUPABASE_PRIVATE_DOCS=true
+VITE_SIGNED_URL_TTL_SECONDS=900
+VITE_IMAGE_TARGET_SIZE_KB=450
+VITE_IMAGE_MAX_SIZE_KB=900
+VITE_IMAGE_INPUT_LIMIT_MB=20
 ```
 
 ## Supabase Database Schema
@@ -56,9 +61,10 @@ create index if not exists documents_employee_id_idx on public.documents(employe
 
 ## Supabase Storage Setup
 
-1. Create a public bucket named `employee-documents` (or match `VITE_SUPABASE_BUCKET`).
-2. Add storage policies that allow authenticated or anonymous uploads/reads/deletes depending on your security model.
-3. If you plan to add auth later, tighten policies to user-scoped access.
+1. Create a bucket named `employee-documents` (or match `VITE_SUPABASE_BUCKET`).
+2. For sensitive worker IDs and documents, set the bucket to **private** and keep `VITE_SUPABASE_PRIVATE_DOCS=true`.
+3. Add storage policies based on your security model. For best protection, require authenticated manager access only.
+4. The app stores storage paths and generates short-lived signed URLs (default 15 minutes) for viewing documents.
 
 ## Local Development
 
@@ -69,11 +75,20 @@ npm run dev
 
 ## Image Optimization Behavior
 
-Before upload, images are optimized in the browser using `browser-image-compression`:
+Before upload, images are optimized in the browser using adaptive compression:
 
-- Max dimension: `1024px`
-- Target size: around `0.8MB`
-- Preferred output format: `WebP`
+- Progressive dimensions: about `2600px` down to `1800px` depending on final size.
+- Target size: `VITE_IMAGE_TARGET_SIZE_KB` (default `450KB`) to fit small buckets.
+- Max accepted output size: `VITE_IMAGE_MAX_SIZE_KB` (default `900KB`).
+- Preferred output format: `WebP` for smaller size while keeping readable text quality.
+
+With defaults, a `50MB` bucket can typically hold many more document photos while keeping ID text legible.
+
+## Security Notes
+
+- Avoid using a public bucket for real IDs and HR documents.
+- Keep signed URL expiry short (`VITE_SIGNED_URL_TTL_SECONDS`), and rotate manager credentials.
+- Client-side login alone is not enough for strong security. For production, move to Supabase Auth with RLS policies tied to authenticated manager accounts.
 
 This reduces Supabase storage usage and improves loading speed.
 
